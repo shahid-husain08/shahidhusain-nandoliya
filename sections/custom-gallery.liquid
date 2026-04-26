@@ -1,0 +1,262 @@
+{% comment %}
+  Section: Custom Social Gallery (Final Perfect Version)
+{% endcomment %}
+
+<section class="custom-social-gallery">
+  <div class="gallery-container">
+    
+    {% if section.settings.heading != blank %}
+      <h2 class="gallery-heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="gallery-grid">
+      {% for block in section.blocks %}
+        <div class="gallery-item" {{ block.shopify_attributes }}>
+          <div class="gallery-image-wrapper">
+            {% if block.settings.image != blank %}
+              <img 
+                src="{{ block.settings.image | image_url: width: 800 }}" 
+                alt="{{ block.settings.image.alt | escape }}"
+                loading="lazy"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                id="img-{{ block.id }}"
+              >
+            {% else %}
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </div>
+
+          {% if block.settings.show_icon %}
+            <button class="shop-icon" 
+              style="top: {{ block.settings.icon_y }}%; left: {{ block.settings.icon_x }}%;" 
+              data-image="{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 400 }}{% endif %}">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 1V11M1 6H11" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <div class="quick-shop-modal" id="QuickShopModal">
+    <div class="qs-content">
+      <button class="qs-close" aria-label="Close">&times;</button>
+      
+      <div class="qs-header">
+        <img src="" alt="Product" class="qs-image" id="ModalImage" width="90" height="110">
+        <div class="qs-info">
+          <h3 class="qs-title">Orange Wide Leg</h3>
+          <p class="qs-price">980,00€</p>
+          <p class="qs-desc">This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.</p>
+        </div>
+      </div>
+
+      <div class="qs-options">
+        <label>Color</label>
+        <div class="qs-swatch-container">
+          <button class="qs-swatch active">White</button>
+          <button class="qs-swatch">Black</button>
+        </div>
+
+        <label>Size</label>
+        <div class="qs-custom-select" id="CustomSizeSelect">
+          <div class="qs-select-trigger">
+            <span class="qs-select-value">Choose your size</span>
+            <div class="qs-select-arrow-box">
+              <svg class="dropdown-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1.5L6 6.5L11 1.5" stroke="#333" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <ul class="qs-select-options">
+            <li>XS</li>
+            <li>S</li>
+            <li>M</li>
+            <li>L</li>
+            <li>XL</li>
+            
+          </ul>
+        </div>
+      </div>
+
+      <button class="qs-add-to-cart">
+        ADD TO CART 
+        <svg class="arrow" width="24" height="12" viewBox="0 0 24 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 1L23 6M23 6L18 11M23 6H1" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .custom-social-gallery { width: 100%; padding: 60px 5%; background-color: #fff; font-family: "Jost", "Futura", sans-serif; }
+  .gallery-container { max-width: 1440px; margin: 0 auto; }
+  
+  .gallery-heading {
+    font-family: "Georgia", "Times New Roman", serif; 
+    font-size: 28px; font-weight: 400; color: #111; margin-bottom: 30px; text-align: left; letter-spacing: 0.5px;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px; 
+    width: 100%;
+  }
+
+  .gallery-item { position: relative; width: 100%; background-color: #f4f4f4; overflow: hidden; }
+
+  .gallery-image-wrapper { position: relative; width: 100%; padding-bottom: 100%; }
+  .gallery-image-wrapper img, .gallery-image-wrapper svg {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;
+  }
+
+  .gallery-item:hover .gallery-image-wrapper img { transform: scale(1.03); }
+
+  .shop-icon {
+    position: absolute; transform: translate(-50%, -50%); width: 24px; height: 24px;
+    background-color: rgba(255, 255, 255, 0.95); border-radius: 50%; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: transform 0.2s ease, background-color 0.2s ease; z-index: 2;
+  }
+  .shop-icon:hover { transform: translate(-50%, -50%) scale(1.15); background-color: #fff; }
+
+  /* Modal Styling */
+  .quick-shop-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); z-index: 9999;
+    align-items: center; justify-content: center;
+  }
+  .quick-shop-modal * { box-sizing: border-box; }
+  .qs-content { background-color: #fff; width: 90%; max-width: 320px; padding: 25px; position: relative; }
+  .qs-close { position: absolute; top: 10px; right: 15px; font-size: 20px; background: none; border: none; cursor: pointer; }
+
+  .qs-header { display: flex; gap: 15px; margin-bottom: 20px; }
+  .qs-image { width: 90px; height: 110px; object-fit: cover; border: 1px solid #eaeaea; }
+  .qs-info { flex: 1; text-align: left; }
+  .qs-title { font-size: 13px; font-weight: 400; margin: 0 0 8px; }
+  .qs-price { font-size: 13px; font-weight: 400; margin-bottom: 10px; }
+  .qs-desc { font-size: 10px; font-weight: 300; line-height: 1.4; color: #555; }
+
+  .qs-swatch-container { display: flex; border: 1px solid #333; margin-bottom: 15px; }
+  .qs-swatch { flex: 1; padding: 8px 0; border: none; background: #fff; cursor: pointer; }
+  .qs-swatch.active { background: #000; color: #fff; }
+  .qs-swatch:not(.active) { border-left: 1px solid #333; }
+
+  /* Custom Select */
+  .qs-custom-select { position: relative; margin-bottom: 25px; width: 100%; }
+  .qs-select-trigger { display: flex; align-items: center; border: 1px solid #333; cursor: pointer; background: #fff; }
+  .qs-select-value { flex: 1; padding: 10px 12px; font-size: 12px; }
+  .qs-select-arrow-box { width: 40px; border-left: 1px solid #333; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; align-self: stretch; }
+  .dropdown-arrow { transition: transform 0.3s ease; }
+  .qs-custom-select.open .dropdown-arrow { transform: rotate(180deg); }
+  .qs-select-options {
+    position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #333; border-top: none;
+    list-style: none; padding: 5px 0; margin: 0; display: none; z-index: 10; max-height: 150px; overflow-y: auto;
+  }
+  .qs-custom-select.open .qs-select-options { display: block; }
+  .qs-select-options li { padding: 10px 12px; font-size: 12px; text-align: center; cursor: pointer; }
+  .qs-select-options li:hover { background-color: #f7f7f7; }
+
+  .qs-add-to-cart {
+    width: 100%; background-color: #000; color: #fff; padding: 14px; border: none; 
+    font-size: 11px; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; cursor: pointer;
+  }
+  .qs-add-to-cart .arrow { margin-left: 15px; }
+
+  @media (max-width: 850px) {
+    .custom-social-gallery { padding: 30px 15px; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+    .qs-content { width: 
+311px; padding: 20px; }
+    .qs-swatch, .qs-select-value, .qs-select-options li { font-size: 13px; padding: 12px; }
+  }
+</style>
+
+<script>
+  function initGallery() {
+    const icons = document.querySelectorAll('.shop-icon');
+    const modal = document.getElementById('QuickShopModal');
+    const closeModalBtn = document.querySelector('.qs-close');
+    const modalImage = document.getElementById('ModalImage');
+    const customSelect = document.getElementById('CustomSizeSelect');
+
+    if (!modal) return;
+
+    icons.forEach(icon => {
+      icon.addEventListener('click', (e) => {
+        e.preventDefault();
+        const imgSrc = icon.getAttribute('data-image');
+        if(imgSrc) modalImage.src = imgSrc;
+        modal.style.display = 'flex';
+      });
+    });
+
+    const closeHandler = () => {
+      modal.style.display = 'none';
+      if(customSelect) customSelect.classList.remove('open');
+    };
+
+    if(closeModalBtn) closeModalBtn.addEventListener('click', closeHandler);
+    modal.addEventListener('click', (e) => { if(e.target === modal) closeHandler(); });
+
+    const swatches = document.querySelectorAll('.qs-swatch');
+    swatches.forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        swatches.forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+      });
+    });
+
+    if(customSelect) {
+      const trigger = customSelect.querySelector('.qs-select-trigger');
+      const options = customSelect.querySelectorAll('.qs-select-options li');
+      const valueSpan = customSelect.querySelector('.qs-select-value');
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        customSelect.classList.toggle('open');
+      });
+
+      options.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          e.stopPropagation();
+          valueSpan.textContent = opt.textContent;
+          customSelect.classList.remove('open');
+        });
+      });
+
+      document.addEventListener('click', () => customSelect.classList.remove('open'));
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initGallery);
+</script>
+
+{% schema %}
+{
+  "name": "Social Gallery",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Tisso vison in the wild" }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "checkbox", "id": "show_icon", "label": "Show '+' Icon", "default": true },
+        { "type": "range", "id": "icon_x", "label": "Horizontal Position", "min": 10, "max": 90, "step": 1, "unit": "%", "default": 50 },
+        { "type": "range", "id": "icon_y", "label": "Vertical Position", "min": 10, "max": 90, "step": 1, "unit": "%", "default": 50 }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Custom Social Gallery", "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }] }]
+}
+{% endschema %}

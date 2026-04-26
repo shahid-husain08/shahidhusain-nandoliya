@@ -1,0 +1,122 @@
+{% comment %}
+  Section: Custom Hero Banner (Mobile Exact Match)
+{% endcomment %}
+
+<section class="custom-hero-wrapper">
+  <div class="custom-hero-banner">
+    
+    <div class="custom-hero-content">
+      <h1 class="hero-title">{{ section.settings.heading }}</h1>
+      <div class="hero-text-wrapper">
+        <div class="hero-text">{{ section.settings.subheading }}</div>
+      </div>
+    </div>
+
+    <div class="hero-illustration-container">
+      <img src="{{ section.settings.bg_image | image_url }}" 
+           alt="Banner Illustration" 
+           class="hero-illustration-img"
+           width="1000" height="600">
+      
+      <div class="hero-btn-wrapper">
+        {% if section.settings.btn_text != blank %}
+          <a href="{{ section.settings.btn_link | default: '#' }}" class="hero-btn">
+            <span class="btn-text">{{ section.settings.btn_text }}</span>
+            <span class="arrow">
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 1L23 6M23 6L18 11M23 6H1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  {% if section.settings.bottom_text != blank %}
+    <div class="hero-bottom-bar">
+      <p>{{ section.settings.bottom_text }}</p>
+    </div>
+  {% endif %}
+</section>
+
+<style>
+  .custom-hero-wrapper { 
+    width: 100%; display: flex; flex-direction: column; 
+    font-family: "Jost", sans-serif; background-color: #fff;
+  }
+
+  /* --- DESKTOP LAYOUT --- */
+  .custom-hero-banner { 
+    width: 100%; min-height: 850px; position: relative; 
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 5% 80px 8%;
+  }
+
+  /* For Desktop: Use the image as a background again */
+  @media (min-width: 851px) {
+    .custom-hero-banner {
+      background-image: url('{{ section.settings.bg_image | image_url }}');
+      background-size: cover; background-position: top center;
+    }
+    .hero-illustration-img { display: none; }
+    .hero-btn-wrapper { display: flex; justify-content: flex-start; }
+    .custom-hero-content { max-width: 460px; padding-top: 450px; }
+    .hero-title { font-size: 70px; font-weight:500; line-height:100%; }
+  }
+
+  /* --- BUTTON ANIMATION (Black to Yellow) --- */
+  .hero-btn { 
+    position: relative; display: inline-flex; align-items: center; 
+    background-color: #000; color: #fff; padding: 16px 45px; 
+    text-decoration: none; font-weight: 500; font-size: 13px; 
+    letter-spacing: 1.5px; text-transform: uppercase; overflow: hidden; z-index: 1;
+  }
+  .hero-btn::before {
+    content: ""; position: absolute; top: 0; left: -100%; 
+    width: 100%; height: 100%; background-color: #fdff00; 
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: -1;
+  }
+  .hero-btn .btn-text, .hero-btn .arrow { position: relative; z-index: 2; transition: color 0.3s ease; }
+  .hero-btn .arrow { margin-left: 20px; display: flex; align-items: center; }
+
+  .hero-btn:hover::before { left: 0; }
+  .hero-btn:hover .btn-text, .hero-btn:hover .arrow { color: #000; }
+  .hero-btn:hover .arrow { transform: translateX(8px); }
+
+  .hero-bottom-bar { width: 100%; background-color: #f4f4f4; text-align: center; padding: 15px; }
+  .hero-bottom-bar p { margin: 0; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* --- MOBILE RESPONSIVE (EXACT MATCH TO FRAME) --- */
+  @media (max-width: 850px) { 
+    .custom-hero-banner { padding: 40px 20px 0; min-height: auto; display: block; }
+    .custom-hero-content { text-align: center; margin-bottom: 30px; }
+    .hero-title { font-size: 36px; font-weight: 600; margin-bottom: 15px; }
+    .hero-text { font-size: 16px; color: #111; line-height: 1.4; max-width: 300px; margin: 0 auto; }
+    
+    .hero-illustration-container { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .hero-illustration-img { display: block; width: 100%; height: auto; max-width: 450px; }
+
+    .hero-btn-wrapper { 
+      position: absolute; bottom: 30px; /* Pulls button up onto the image */
+      width: 100%; display: flex; justify-content: center; z-index: 5;
+    }
+    .hero-btn { padding: 14px 40px; min-width: 240px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Hero Banner",
+  "settings": [
+    { "type": "image_picker", "id": "bg_image", "label": "Background Image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The Gift Guide" },
+    { "type": "richtext", "id": "subheading", "label": "Description" },
+    { "type": "text", "id": "btn_text", "label": "Button Text", "default": "SHOP NOW" },
+    { "type": "url", "id": "btn_link", "label": "Button Link" },
+    { "type": "text", "id": "bottom_text", "label": "Bottom Bar Text", "default": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR" }
+  ],
+  "presets": [{"name": "Custom Hero Banner"}]
+}
+{% endschema %}
